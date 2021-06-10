@@ -20,4 +20,5 @@ Calculate Qbar (average response over MICE datasets)
 \examples{
 imp = mice::mice(mice::nhanes)
 Qbar(imp, "bmi")
+
 }
