@@ -23,6 +23,6 @@ estimate \eqn{\bar{Q}_m}
 }
 \examples{
 imp = mice::mice(mice::nhanes)
-dof(imp, "bmi")
+dof(imp, "hyp")
 
 }

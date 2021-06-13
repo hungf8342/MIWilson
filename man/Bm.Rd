@@ -21,6 +21,6 @@ Calculate between-imputation variance of the response mean
 }
 \examples{
 imp = mice::mice(mice::nhanes)
-Bm(imp, "bmi")
+Bm(imp, "hyp")
 
 }

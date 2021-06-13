@@ -19,6 +19,6 @@ Calculate Ubar (average response variance over MICE datasets)
 }
 \examples{
 imp = mice::mice(mice::nhanes)
-Ubar(imp, "bmi")
+Ubar(imp, "hyp")
 
 }

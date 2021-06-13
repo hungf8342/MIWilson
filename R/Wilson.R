@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' Qbar(imp, "bmi")
+#' Qbar(imp, "hyp")
 #'
 Qbar <- function(mids_obj,response) {
   qbar = lapply(1:mids_obj$m,
@@ -32,7 +32,7 @@ Qbar <- function(mids_obj,response) {
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' Ubar(imp, "bmi")
+#' Ubar(imp, "hyp")
 #'
 Ubar <- function(mids_obj, response) {
   ubar = lapply(1:mids_obj$m,
@@ -56,7 +56,7 @@ Ubar <- function(mids_obj, response) {
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' Bm(imp, "bmi")
+#' Bm(imp, "hyp")
 #'
 Bm <- function(mids_obj, response) {
   qbar = Qbar(mids_obj, response)
@@ -79,7 +79,7 @@ Bm <- function(mids_obj, response) {
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' Tm(imp, "bmi")
+#' Tm(imp, "hyp")
 #'
 Tm <- function(mids_obj, response) {
   ubar = Ubar(mids_obj, response)
@@ -100,7 +100,7 @@ Tm <- function(mids_obj, response) {
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' dof(imp, "bmi")
+#' dof(imp, "hyp")
 #'
 dof <- function(mids_obj, response) {
   ubar = Ubar(mids_obj, response)
@@ -123,7 +123,7 @@ dof <- function(mids_obj, response) {
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' mi_wilson(imp, "bmi", 0.95)
+#' mi_wilson(imp, "hyp", 0.95)
 #'
 mi_wilson <- function(mids_obj, response, ci_level) {
   qbar = Qbar(mids_obj, response)
@@ -132,4 +132,26 @@ mi_wilson <- function(mids_obj, response, ci_level) {
   t_score = stats::qt(ci_level, df)
 
   return(c(qbar - sqrt(tm)*t_score, qbar + sqrt(tm)*t_score))
+}
+
+#' Calculates the specified Wald CI of a binomial proportion
+#' variable, given imputed data sets.
+#'
+#' @param mids_obj mids object created by mice package
+#' @param response string name of response variable
+#' @param ci_level desired confidence interval level
+#'
+#' @return two-length vector of lower CI and upper CI
+#' @export
+#'
+#' @examples
+#' imp = mice::mice(mice::nhanes)
+#' mi_wald(imp, "hyp", 0.95)
+#'
+mi_wald <- function(mids_obj, response, ci_level) {
+  qbar = Qbar(mids_obj, response)
+  tm = Tm(mids_obj, response)
+  z_score = stats::qnorm(ci_level)
+
+  return(c(qbar - sqrt(tm)*z_score, qbar + sqrt(tm)*z_score))
 }

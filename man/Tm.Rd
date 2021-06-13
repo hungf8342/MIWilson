@@ -19,6 +19,6 @@ Estimate variance of proportion point estimate \eqn{\bar{Q}_m}
 }
 \examples{
 imp = mice::mice(mice::nhanes)
-Tm(imp, "bmi")
+Tm(imp, "hyp")
 
 }
