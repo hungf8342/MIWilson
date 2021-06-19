@@ -2,9 +2,11 @@
 
 export(Bm)
 export(Qbar)
+export(Rm)
 export(Tm)
 export(Ubar)
 export(dof)
 export(mi_wald)
 export(mi_wilson)
 importFrom(magrittr,"%>%")
+importFrom(rlang,.data)

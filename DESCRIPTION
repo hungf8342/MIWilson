@@ -5,7 +5,7 @@ Authors@R:
     person(given = "Frances",
            family = "Hung",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
+           email = "wyfhung@gmail.com",
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
@@ -19,6 +19,7 @@ Imports:
     dplyr,
     magrittr,
     mice,
+    rlang,
     stats
 Suggests: 
     testthat (>= 3.0.0)
