@@ -1,6 +1,6 @@
 
 
-#' Calculate mean of bernoulli variable (p-hats)
+#' Calculate Qhats (mean of response for each imputed dataset)
 #'
 #' @param mids_obj mids object created by mice package
 #' @param response string name of binary response variable
@@ -11,7 +11,12 @@
 #' @examples
 #' imp = mice::mice(mice::nhanes)
 #' Qhats(imp, "hyp")
+#'
 Qhats <- function(mids_obj,response) {
+  if ("constant" %in% mids_obj$loggedEvents$meth) {
+    stop(paste("MICE unable to impute",response," due to constant observed values."))
+  }
+
   qhats = lapply(1:mids_obj$m,
                  function(i) mice::complete(mids_obj,i) %>%
                    dplyr::select(response) %>%
@@ -170,16 +175,16 @@ dof <- function(mids_obj, response) {
 #'
 #' @param mids_obj mids object created by mice package
 #' @param response string name of response variable
-#' @param ci_level desired confidence interval level
+#' @param ci_level desired confidence interval level (defaults to 95%)
 #'
-#' @return two-length vector of lower CI and upper CI
+#' @return two-length vector of Wilson lower CI and upper CI
 #' @export
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
 #' mi_wilson(imp, "hyp", 0.95)
 #'
-mi_wilson <- function(mids_obj, response, ci_level) {
+mi_wilson <- function(mids_obj, response, ci_level=0.95) {
 
   #if confidence interval is invalid
   if(ci_level<=0 | ci_level>= 1) {
@@ -213,16 +218,16 @@ mi_wilson <- function(mids_obj, response, ci_level) {
 #'
 #' @param mids_obj mids object created by mice package
 #' @param response string name of response variable
-#' @param ci_level desired confidence interval level
+#' @param ci_level desired confidence interval level (defaults to 95%)
 #'
-#' @return two-length vector of lower CI and upper CI
+#' @return two-length vector of Wald lower CI and upper CI
 #' @export
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
 #' mi_wald(imp, "hyp", 0.95)
 #'
-mi_wald <- function(mids_obj, response, ci_level) {
+mi_wald <- function(mids_obj, response, ci_level=0.95) {
 
   if(ci_level<=0 | ci_level>= 1) {
     stop("CI level must be between 0 and 1.")
