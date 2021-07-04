@@ -3,26 +3,26 @@
 \name{mi_wald}
 \alias{mi_wald}
 \title{Calculates the specified Wald CI of a binomial proportion
-variable, given imputed data sets.}
+variable, given imputed data sets. TODO: create edited nhanes dataset}
 \usage{
-mi_wald(mids_obj, response, ci_level)
+mi_wald(mids_obj, response, ci_level = 0.95)
 }
 \arguments{
 \item{mids_obj}{mids object created by mice package}
 
-\item{response}{string name of response variable}
+\item{response}{string name of response variable (must be 0-1 valued)}
 
-\item{ci_level}{desired confidence interval level}
+\item{ci_level}{desired confidence interval level (defaults to 95\%)}
 }
 \value{
-two-length vector of lower CI and upper CI
+two-length vector of Wald lower CI and upper CI
 }
 \description{
 Calculates the specified Wald CI of a binomial proportion
-variable, given imputed data sets.
+variable, given imputed data sets. TODO: create edited nhanes dataset
 }
 \examples{
-imp = mice::mice(mice::nhanes)
+imp = mice::mice(mice::nhanes \%>\% dplyr::mutate(hyp = hyp-1))
 mi_wald(imp, "hyp", 0.95)
 
 }

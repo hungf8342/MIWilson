@@ -1,5 +1,9 @@
 
 
+#' @importFrom magrittr %>%
+#' @export
+magrittr::`%>%`
+
 #' Calculate Qhats (mean of response for each imputed dataset)
 #'
 #' @param mids_obj mids object created by mice package
@@ -7,6 +11,8 @@
 #'
 #' @return Qhats: vector of mean response for each imputed dataset
 #' @export
+#' @importFrom dplyr all_of
+#' @importFrom dplyr select
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
@@ -14,12 +20,12 @@
 #'
 Qhats <- function(mids_obj,response) {
   if ("constant" %in% mids_obj$loggedEvents$meth) {
-    stop(paste("MICE unable to impute",response," due to constant observed values."))
+    stop(paste("MICE unable to impute",response," due to constant observed response values."))
   }
 
   qhats = lapply(1:mids_obj$m,
                  function(i) mice::complete(mids_obj,i) %>%
-                   dplyr::select(response) %>%
+                   dplyr::select(all_of(response)) %>%
                    colMeans()) %>% unlist()
 
   return(qhats)
@@ -68,7 +74,6 @@ Uhats <- function(mids_obj, response) {
 #'
 #' @return Ubar: average response variance over MICE datasets
 #' @export
-#' @importFrom rlang .data
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
@@ -174,14 +179,15 @@ dof <- function(mids_obj, response) {
 #' variable, given imputed data sets.
 #'
 #' @param mids_obj mids object created by mice package
-#' @param response string name of response variable
+#' @param response string name of response variable (must be 0-1 valued)
 #' @param ci_level desired confidence interval level (defaults to 95%)
 #'
 #' @return two-length vector of Wilson lower CI and upper CI
 #' @export
+#' @importFrom dplyr mutate
 #'
 #' @examples
-#' imp = mice::mice(mice::nhanes)
+#' imp = mice::mice(mice::nhanes %>% dplyr::mutate(hyp = hyp-1))
 #' mi_wilson(imp, "hyp", 0.95)
 #'
 mi_wilson <- function(mids_obj, response, ci_level=0.95) {
@@ -191,10 +197,18 @@ mi_wilson <- function(mids_obj, response, ci_level=0.95) {
     stop("CI level must be between 0 and 1.")
   }
 
-  qbar = Qbar(mids_obj, response)
-  rm = Rm(mids_obj, response)
+  #if response is not 0-1 valued
+  if(all(lapply(mids_obj$data %>% select(all_of(response)),
+                function(x) x %in% c(NA,0,1)) %>% unlist())==FALSE) {
+    stop(paste(response,"must be 0-1 binary encoded."))
+  }
 
-  #if variable has one value only
+  qbar = Qbar(mids_obj, response)
+  print(paste("Qbar: ",qbar))
+  rm = Rm(mids_obj, response)
+  print(paste("RM: ",rm))
+
+  #if response variable has one value only
   if(rm==0) {
     df = Inf
   }
@@ -214,23 +228,30 @@ mi_wilson <- function(mids_obj, response, ci_level=0.95) {
 }
 
 #' Calculates the specified Wald CI of a binomial proportion
-#' variable, given imputed data sets.
+#' variable, given imputed data sets. TODO: create edited nhanes dataset
 #'
 #' @param mids_obj mids object created by mice package
-#' @param response string name of response variable
+#' @param response string name of response variable (must be 0-1 valued)
 #' @param ci_level desired confidence interval level (defaults to 95%)
 #'
 #' @return two-length vector of Wald lower CI and upper CI
 #' @export
+#' @importFrom magrittr %>%
 #'
 #' @examples
-#' imp = mice::mice(mice::nhanes)
+#' imp = mice::mice(mice::nhanes %>% dplyr::mutate(hyp = hyp-1))
 #' mi_wald(imp, "hyp", 0.95)
 #'
 mi_wald <- function(mids_obj, response, ci_level=0.95) {
 
   if(ci_level<=0 | ci_level>= 1) {
     stop("CI level must be between 0 and 1.")
+  }
+
+  #if response is not 0-1 valued
+  if(all(lapply(mids_obj$data %>% select(all_of(response)),
+                function(x) x %in% c(NA,0,1)) %>% unlist())==FALSE) {
+    stop(paste(response,"must be 0-1 binary encoded."))
   }
 
   qbar = Qbar(mids_obj, response)

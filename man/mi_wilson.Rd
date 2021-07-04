@@ -5,24 +5,24 @@
 \title{Calculates the specified Wilson CI of a binomial proportion
 variable, given imputed data sets.}
 \usage{
-mi_wilson(mids_obj, response, ci_level)
+mi_wilson(mids_obj, response, ci_level = 0.95)
 }
 \arguments{
 \item{mids_obj}{mids object created by mice package}
 
-\item{response}{string name of response variable}
+\item{response}{string name of response variable (must be 0-1 valued)}
 
-\item{ci_level}{desired confidence interval level}
+\item{ci_level}{desired confidence interval level (defaults to 95\%)}
 }
 \value{
-two-length vector of lower CI and upper CI
+two-length vector of Wilson lower CI and upper CI
 }
 \description{
 Calculates the specified Wilson CI of a binomial proportion
 variable, given imputed data sets.
 }
 \examples{
-imp = mice::mice(mice::nhanes)
+imp = mice::mice(mice::nhanes \%>\% dplyr::mutate(hyp = hyp-1))
 mi_wilson(imp, "hyp", 0.95)
 
 }

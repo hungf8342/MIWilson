@@ -1,5 +1,3 @@
-context("Tests whether the MI-Wilson function, given a mice object,
-        outputs correct CI")
 library(mice)
 library(dplyr)
 
@@ -14,4 +12,10 @@ test_that("MI-Wilson works", {
   expect_equal(mi_wilson(imp, "hyp", 0.95)[1]>0, TRUE)
 })
 
+test_that("Correct errors thrown", {
+  nhanes_xtreme = mice::nhanes %>% mutate(hyp=ifelse(is.na(hyp),NA,0))
+  imp_x = mice::mice(nhanes_xtreme)
 
+  expect_error(mi_wald(imp_x, "hyp", 1.99),"^CI.*")
+  expect_error(mi_wilson(imp_x,"hyp"),".*unable to impute.*")
+})
