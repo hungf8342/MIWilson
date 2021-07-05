@@ -5,12 +5,12 @@
 \title{Calculate between-imputation variance of the response mean
 \deqn{\frac{\sum (\hat{Q}_l-\bar{Q})}{m-1}}}
 \usage{
-Bm(mids_obj, response)
+Bm(qhats, m)
 }
 \arguments{
-\item{mids_obj}{mids object created by mice package}
+\item{qhats}{vector of Qhats(means of response for each imputed dataset)}
 
-\item{response}{string name of response variable}
+\item{m}{number of imputed datasets}
 }
 \value{
 Bm: the between-dataset variance of the response mean
@@ -21,6 +21,8 @@ Calculate between-imputation variance of the response mean
 }
 \examples{
 imp = mice::mice(mice::nhanes)
-Bm(imp, "hyp")
+qhats = Qhats(imp, "hyp")
+m = imp$m
+Bm(qhats, m)
 
 }

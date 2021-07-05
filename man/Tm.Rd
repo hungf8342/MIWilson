@@ -4,12 +4,14 @@
 \alias{Tm}
 \title{Estimate variance of proportion point estimate \eqn{\bar{Q}_m}}
 \usage{
-Tm(mids_obj, response)
+Tm(qhats, m, nrow)
 }
 \arguments{
-\item{mids_obj}{mids object created by mice package}
+\item{qhats}{vector of Qhats(means of response for each imputed dataset)}
 
-\item{response}{string name of response variable}
+\item{m}{number of imputed datasets}
+
+\item{nrow}{number of observations in the imputed dataset}
 }
 \value{
 variance of proportion point estimate
@@ -19,6 +21,9 @@ Estimate variance of proportion point estimate \eqn{\bar{Q}_m}
 }
 \examples{
 imp = mice::mice(mice::nhanes)
-Tm(imp, "hyp")
+qhats = Qhats(imp, "hyp")
+m = imp$m
+nrow = imp$data \%>\% nrow()
+Tm(qhats, m, nrow)
 
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/Wilson.R
 \name{Qhats}
 \alias{Qhats}
-\title{Calculate Qhats (mean of response for each imputed dataset)}
+\title{Calculate Qhats (means of response for each imputed dataset)}
 \usage{
 Qhats(mids_obj, response)
 }
@@ -12,10 +12,10 @@ Qhats(mids_obj, response)
 \item{response}{string name of binary response variable}
 }
 \value{
-Qhats: vector of mean response for each imputed dataset
+Qhats: vector of response means for each imputed dataset
 }
 \description{
-Calculate Qhats (mean of response for each imputed dataset)
+Calculate Qhats (means of response for each imputed dataset)
 }
 \examples{
 imp = mice::mice(mice::nhanes)

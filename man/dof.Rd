@@ -6,12 +6,14 @@
 confidence intervals of t-distributed proportion point
 estimate \eqn{\bar{Q}_m}}
 \usage{
-dof(mids_obj, response)
+dof(qhats, m, nrow)
 }
 \arguments{
-\item{mids_obj}{mids object created by mice package}
+\item{qhats}{vector of Qhats(means of response for each imputed dataset)}
 
-\item{response}{string name of response variable}
+\item{m}{number of imputed datasets}
+
+\item{nrow}{number of observations in the imputed dataset}
 }
 \value{
 degrees of freedom
@@ -23,6 +25,9 @@ estimate \eqn{\bar{Q}_m}
 }
 \examples{
 imp = mice::mice(mice::nhanes)
-dof(imp, "hyp")
+qhats = Qhats(imp, "hyp")
+m = imp$m
+nrow = imp$data \%>\% nrow()
+dof(qhats, m, nrow)
 
 }

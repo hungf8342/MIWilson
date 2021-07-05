@@ -4,12 +4,10 @@
 \alias{Qbar}
 \title{Calculate Qbar (average response over MICE datasets)}
 \usage{
-Qbar(mids_obj, response)
+Qbar(qhats)
 }
 \arguments{
-\item{mids_obj}{mids object created by mice package}
-
-\item{response}{string name of binary response variable}
+\item{qhats}{vector of Qhats(response means for each imputed dataset)}
 }
 \value{
 Qbar: the average response over MICEd datasets.
@@ -19,6 +17,7 @@ Calculate Qbar (average response over MICE datasets)
 }
 \examples{
 imp = mice::mice(mice::nhanes)
-Qbar(imp, "hyp")
+qhats = Qhats(imp, "hyp")
+Qbar(qhats)
 
 }

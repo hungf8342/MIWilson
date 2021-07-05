@@ -4,12 +4,12 @@
 \alias{Uhats}
 \title{Calculate Uhats (variance for each imputed dataset)}
 \usage{
-Uhats(mids_obj, response)
+Uhats(qhats, nrow)
 }
 \arguments{
-\item{mids_obj}{mids object created by mice package}
+\item{qhats}{vector of Qhats(means of response for each imputed dataset)}
 
-\item{response}{string name of binary response variable}
+\item{nrow}{number of observations in the imputed dataset}
 }
 \value{
 Uhats: vector of response variances for each imputed dataset
@@ -19,6 +19,8 @@ Calculate Uhats (variance for each imputed dataset)
 }
 \examples{
 imp = mice::mice(mice::nhanes)
-Uhats(imp,"hyp")
+qhats = Qhats(imp, "hyp")
+nrow = imp$data \%>\% nrow()
+Uhats(qhats, nrow)
 
 }

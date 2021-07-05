@@ -4,12 +4,12 @@
 #' @export
 magrittr::`%>%`
 
-#' Calculate Qhats (mean of response for each imputed dataset)
+#' Calculate Qhats (means of response for each imputed dataset)
 #'
 #' @param mids_obj mids object created by mice package
 #' @param response string name of binary response variable
 #'
-#' @return Qhats: vector of mean response for each imputed dataset
+#' @return Qhats: vector of response means for each imputed dataset
 #' @export
 #' @importFrom dplyr all_of
 #' @importFrom dplyr select
@@ -33,8 +33,7 @@ Qhats <- function(mids_obj,response) {
 
 #' Calculate Qbar (average response over MICE datasets)
 #'
-#' @param response string name of binary response variable
-#' @param mids_obj mids object created by mice package
+#' @param qhats vector of Qhats(response means for each imputed dataset)
 #'
 #' @return Qbar: the average response over MICEd datasets.
 #' @export
@@ -42,106 +41,118 @@ Qhats <- function(mids_obj,response) {
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' Qbar(imp, "hyp")
+#' qhats = Qhats(imp, "hyp")
+#' Qbar(qhats)
 #'
-Qbar <- function(mids_obj, response) {
-  qbar = Qhats(mids_obj, response) %>% mean()
-
-  return(qbar)
+Qbar <- function(qhats) {
+  return(qhats %>% mean())
 }
 
 #' Calculate Uhats (variance for each imputed dataset)
 #'
-#' @param mids_obj mids object created by mice package
-#' @param response string name of binary response variable
+#' @param qhats vector of Qhats(means of response for each imputed dataset)
+#' @param nrow number of observations in the imputed dataset
 #'
 #' @return Uhats: vector of response variances for each imputed dataset
 #' @export
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' Uhats(imp,"hyp")
+#' qhats = Qhats(imp, "hyp")
+#' nrow = imp$data %>% nrow()
+#' Uhats(qhats, nrow)
 #'
-Uhats <- function(mids_obj, response) {
-  qhats = Qhats(mids_obj, response)
-  return(qhats*(1-qhats)/(mids_obj$data %>% nrow()))
+Uhats <- function(qhats, nrow) {
+  return(qhats*(1-qhats)/nrow)
 }
 
 #' Calculate Ubar (average response variance over MICE datasets)
 #'
-#' @param mids_obj mids object created by mice package
-#' @param response string name of response variable
+#' @param qhats vector of Qhats(means of response for each imputed dataset)
+#' @param m number of imputed datasets
+#' @param nrow number of observations in the imputed dataset
 #'
 #' @return Ubar: average response variance over MICE datasets
 #' @export
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' Ubar(imp, "hyp")
+#' qhats = Qhats(imp, "hyp")
+#' m = imp$m
+#' nrow = imp$data %>% nrow()
+#' Ubar(qhats, m, nrow)
 #'
-Ubar <- function(mids_obj, response) {
-  uhats = Uhats(mids_obj, response)
+Ubar <- function(qhats, m, nrow) {
+  uhats = Uhats(qhats, nrow)
 
-  return(sum(uhats)/mids_obj$m)
+  return(sum(uhats)/m)
 }
 
 
 #' Calculate between-imputation variance of the response mean
 #' \deqn{\frac{\sum (\hat{Q}_l-\bar{Q})}{m-1}}
 #'
-#' @param mids_obj mids object created by mice package
-#' @param response string name of response variable
+#' @param qhats vector of Qhats(means of response for each imputed dataset)
+#' @param m number of imputed datasets
 #'
 #' @return Bm: the between-dataset variance of the response mean
 #' @export
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' Bm(imp, "hyp")
+#' qhats = Qhats(imp, "hyp")
+#' m = imp$m
+#' Bm(qhats, m)
 #'
-Bm <- function(mids_obj, response) {
-  qbar = Qbar(mids_obj, response)
-  qhats = Qhats(mids_obj, response)
+Bm <- function(qhats, m) {
+  qbar = Qbar(qhats)
 
-  return(sum((qhats-qbar)^2)/(mids_obj$m-1))
+  return(sum((qhats-qbar)^2)/(m-1))
 }
 
 #' Estimate variance of proportion point estimate \eqn{\bar{Q}_m}
 #'
-#' @param mids_obj mids object created by mice package
-#' @param response string name of response variable
+#' @param qhats vector of Qhats(means of response for each imputed dataset)
+#' @param m number of imputed datasets
+#' @param nrow number of observations in the imputed dataset
 #'
 #' @return variance of proportion point estimate
 #' @export
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' Tm(imp, "hyp")
+#' qhats = Qhats(imp, "hyp")
+#' m = imp$m
+#' nrow = imp$data %>% nrow()
+#' Tm(qhats, m, nrow)
 #'
-Tm <- function(mids_obj, response) {
-  ubar = Ubar(mids_obj, response)
-  bm = Bm(mids_obj, response)
+Tm <- function(qhats, m, nrow) {
+  ubar = Ubar(qhats, m, nrow)
+  bm = Bm(qhats, m)
 
-  return((1 + 1/mids_obj$m)*bm + ubar)
+  return((1 + 1/m)*bm + ubar)
 }
 
 #' Helper function for getting rm, a key component for
 #' calculating degrees of freedom and the wilson CI directly
 #'
-#' @param mids_obj mids object created by mice package
-#' @param response string name of response variable
+#' @param qhats vector of Qhats(means of response for each imputed dataset)
+#' @param m number of imputed datasets
+#' @param nrow number of observations in the imputed dataset
 #'
 #' @return rm
 #' @export
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' Rm(imp, "hyp")
+#' qhats = Qhats(imp, "hyp")
+#' m = imp$m
+#' nrow = imp$data %>% nrow()
+#' Rm(qhats, m, nrow)
 #'
-Rm <- function(mids_obj, response) {
-  ubar = Ubar(mids_obj, response)
-  bm = Bm(mids_obj, response)
-  m = mids_obj$m
+Rm <- function(qhats, m, nrow) {
+  ubar = Ubar(qhats, m, nrow)
+  bm = Bm(qhats, m)
 
   if(bm==0) {
     rm = 0
@@ -158,19 +169,22 @@ Rm <- function(mids_obj, response) {
 #' confidence intervals of t-distributed proportion point
 #' estimate \eqn{\bar{Q}_m}
 #'
-#' @param mids_obj mids object created by mice package
-#' @param response string name of response variable
+#' @param qhats vector of Qhats(means of response for each imputed dataset)
+#' @param m number of imputed datasets
+#' @param nrow number of observations in the imputed dataset
 #'
 #' @return degrees of freedom
 #' @export
 #'
 #' @examples
 #' imp = mice::mice(mice::nhanes)
-#' dof(imp, "hyp")
+#' qhats = Qhats(imp, "hyp")
+#' m = imp$m
+#' nrow = imp$data %>% nrow()
+#' dof(qhats, m, nrow)
 #'
-dof <- function(mids_obj, response) {
-  m = mids_obj$m
-  rm = Rm(mids_obj, response)
+dof <- function(qhats, m, nrow) {
+  rm = Rm(qhats, m, nrow)
 
   return((m - 1)*(1 + 1/rm)^2)
 }
@@ -203,9 +217,12 @@ mi_wilson <- function(mids_obj, response, ci_level=0.95) {
     stop(paste(response,"must be 0-1 binary encoded."))
   }
 
-  qbar = Qbar(mids_obj, response)
+  qhats = Qhats(mids_obj, response)
+  m = mids_obj$m
+  nrow = mids_obj$data %>% nrow()
+  qbar = Qbar(qhats)
   print(paste("Qbar: ",qbar))
-  rm = Rm(mids_obj, response)
+  rm = Rm(qhats, m, nrow)
   print(paste("RM: ",rm))
 
   #if response variable has one value only
@@ -213,13 +230,12 @@ mi_wilson <- function(mids_obj, response, ci_level=0.95) {
     df = Inf
   }
   else {
-    df = dof(mids_obj, response)
+    df = dof(qhats, m, nrow)
   }
 
   t_score = stats::qt(ci_level, df)
-  n = mids_obj$data %>% nrow()
 
-  tquad = t_score^2 / n + t_score^2 * rm /n
+  tquad = t_score^2 / nrow + t_score^2 * rm /nrow
   center = (2 * qbar + tquad)/(2*(1 + tquad))
   half_width = sqrt( (2*qbar + tquad)^2 / (4*(1+tquad)^2) -
                        qbar^2 / (1+tquad) )
@@ -254,9 +270,12 @@ mi_wald <- function(mids_obj, response, ci_level=0.95) {
     stop(paste(response,"must be 0-1 binary encoded."))
   }
 
-  qbar = Qbar(mids_obj, response)
-  tm = Tm(mids_obj, response)
-  df = dof(mids_obj, response)
+  qhats = Qhats(mids_obj, response)
+  m = mids_obj$m
+  nrow = mids_obj$data %>% nrow()
+  qbar = Qbar(qhats)
+  tm = Tm(qhats, m, nrow)
+  df = dof(qhats, m, nrow)
   t_score = stats::qt(ci_level, df)
 
   return(c(qbar - sqrt(tm)*t_score, qbar + sqrt(tm)*t_score))

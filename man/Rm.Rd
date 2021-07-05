@@ -5,12 +5,14 @@
 \title{Helper function for getting rm, a key component for
 calculating degrees of freedom and the wilson CI directly}
 \usage{
-Rm(mids_obj, response)
+Rm(qhats, m, nrow)
 }
 \arguments{
-\item{mids_obj}{mids object created by mice package}
+\item{qhats}{vector of Qhats(means of response for each imputed dataset)}
 
-\item{response}{string name of response variable}
+\item{m}{number of imputed datasets}
+
+\item{nrow}{number of observations in the imputed dataset}
 }
 \value{
 rm
@@ -21,6 +23,9 @@ calculating degrees of freedom and the wilson CI directly
 }
 \examples{
 imp = mice::mice(mice::nhanes)
-Rm(imp, "hyp")
+qhats = Qhats(imp, "hyp")
+m = imp$m
+nrow = imp$data \%>\% nrow()
+Rm(qhats, m, nrow)
 
 }
