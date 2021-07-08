@@ -221,9 +221,7 @@ mi_wilson <- function(mids_obj, response, ci_level=0.95) {
   m = mids_obj$m
   nrow = mids_obj$data %>% nrow()
   qbar = Qbar(qhats)
-  print(paste("Qbar: ",qbar))
   rm = Rm(qhats, m, nrow)
-  print(paste("RM: ",rm))
 
   #if response variable has one value only
   if(rm==0) {
@@ -244,7 +242,7 @@ mi_wilson <- function(mids_obj, response, ci_level=0.95) {
 }
 
 #' Calculates the specified Wald CI of a binomial proportion
-#' variable, given imputed data sets. TODO: create edited nhanes dataset
+#' variable, given imputed data sets.
 #'
 #' @param mids_obj mids object created by mice package
 #' @param response string name of response variable (must be 0-1 valued)

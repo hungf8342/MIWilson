@@ -3,7 +3,7 @@
 \name{mi_wald}
 \alias{mi_wald}
 \title{Calculates the specified Wald CI of a binomial proportion
-variable, given imputed data sets. TODO: create edited nhanes dataset}
+variable, given imputed data sets.}
 \usage{
 mi_wald(mids_obj, response, ci_level = 0.95)
 }
@@ -19,7 +19,7 @@ two-length vector of Wald lower CI and upper CI
 }
 \description{
 Calculates the specified Wald CI of a binomial proportion
-variable, given imputed data sets. TODO: create edited nhanes dataset
+variable, given imputed data sets.
 }
 \examples{
 imp = mice::mice(mice::nhanes \%>\% dplyr::mutate(hyp = hyp-1))
