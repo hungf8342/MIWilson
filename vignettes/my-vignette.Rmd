@@ -1,0 +1,85 @@
+---
+title: "Simulations of Wilson vs. Wald CI Intervals"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Simulations of Wilson vs. Wald CI Intervals}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(MIWilson)
+```
+
+```{r}
+n = 100
+p = 0.5
+m = 10
+MIA_perc = 0.3
+
+create_missing_data <- function(n, p, m, MIA_perc) {
+  
+  complete = incomplete = rbinom(n, 1, p)
+  
+  #setting up number of missing values, dataset with missing values
+  blanks = floor(MIA_perc * n)
+  idcs = 1:length(complete)
+  incomplete[sample(idcs, blanks)] = NA
+  
+  return(incomplete)
+
+}
+
+incomplete = create_missing_data(n, p, m, MIA_perc)
+
+
+
+#creating multiple imputations
+create_imps <- function(n, m, incomplete) {
+  
+  count_one = table(incomplete)[2]
+  count_zero = table(incomplete)[1]
+  
+  imputations = matrix(nrow = n, ncol = m)
+  for (i in 1:m) {
+    p_star = rbeta(1, count_one + 1, count_zero + 1)
+    incomp_idx = which(is.na(incomplete))
+    
+    curr_imp = incomplete
+    curr_imp[incomp_idx] = rbinom(length(incomp_idx), 1, p_star)
+    
+    imputations[,i] = curr_imp
+  }
+  
+  return(imputations)
+  
+}
+
+imputations = create_imps(n, m, incomplete)
+```
+
+```{r}
+phats = colSums(imputations)/nrow(imputations)
+mi_wald_phat(phats = phats, n = nrow(imputations))
+mi_wald(ci_level = 0.95, summaries = TRUE, phats=phats, n = nrow(imputations) )
+# nhanes = mice::nhanes %>%
+#   dplyr::mutate(hyp = hyp-1)
+# set.seed(47)
+# imp = mice::mice(nhanes)
+# 
+# qhats = Qhats(imp,"hyp")
+# m = imp$m
+# nrow = imp$data %>% nrow()
+# print(qhats)
+# Qbar(qhats)
+# Ubar(qhats, m, nrow)
+# mi_wilson(imp,"hyp",0.95)
+```
+
