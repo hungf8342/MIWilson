@@ -14,16 +14,20 @@ knitr::opts_chunk$set(
 )
 ```
 
+In "Wilson Confidence Intervals for Binomial
+Proportions With Multiple Imputation for Missing
+Data" (A. Lott & J. Reiter, 2018), the authors run simulation studies comparing coverage of MI-Wilson and MI-Wald confidence intervals, among a few other slight variations of the two. This is good motivation for using the `phat` versions of the `mi_wilson` and `mi_wald` functions. While we don't implement the simulations here, we lay out a foundation and demonstrate one use of the `mi_wald_phat` and `mi_wilson_phat` functions.
+
+We first load the MI-Wilson library as follows:
+
 ```{r setup}
 library(MIWilson)
 ```
 
-```{r}
-n = 100
-p = 0.5
-m = 10
-MIA_perc = 0.3
+We then create a simple master dataset with binary values and induce MCAR missingness; this is carried out by the `create_missing_data` function. With the incomplete master dataset, we create multiple imputations using Bayesian principles (see paper for details), using the `create_imps` function. 
 
+```{r}
+#creating missing data
 create_missing_data <- function(n, p, m, MIA_perc) {
   
   complete = incomplete = rbinom(n, 1, p)
@@ -36,9 +40,6 @@ create_missing_data <- function(n, p, m, MIA_perc) {
   return(incomplete)
 
 }
-
-incomplete = create_missing_data(n, p, m, MIA_perc)
-
 
 
 #creating multiple imputations
@@ -62,24 +63,19 @@ create_imps <- function(n, m, incomplete) {
   
 }
 
-imputations = create_imps(n, m, incomplete)
 ```
 
 ```{r}
+n = 100
+p = 0.5
+m = 10
+MIA_perc = 0.3
+
+incomplete = create_missing_data(n, p, m, MIA_perc)
+imputations = create_imps(n, m, incomplete)
+
 phats = colSums(imputations)/nrow(imputations)
 mi_wald_phat(phats = phats, n = nrow(imputations))
-mi_wald(ci_level = 0.95, summaries = TRUE, phats=phats, n = nrow(imputations) )
-# nhanes = mice::nhanes %>%
-#   dplyr::mutate(hyp = hyp-1)
-# set.seed(47)
-# imp = mice::mice(nhanes)
-# 
-# qhats = Qhats(imp,"hyp")
-# m = imp$m
-# nrow = imp$data %>% nrow()
-# print(qhats)
-# Qbar(qhats)
-# Ubar(qhats, m, nrow)
-# mi_wilson(imp,"hyp",0.95)
+mi_wilson_phat(phats = phats, n =nrow(imputations))
 ```
 

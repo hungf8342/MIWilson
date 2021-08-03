@@ -23,5 +23,5 @@ test_that("Correct errors thrown", {
   expect_error(mi_wald(imp_x, "hyp", 1.99),"^CI.*")
   expect_error(mi_wilson(imp_x,"hyp"),".*unable to impute.*")
   expect_error(mi_wilson(imp, "hyp"), ".*binary encoded.*")
-  expect_warning(mi_wilson(phats = rep(0.3,3), n = 10), ".*degrees of freedom.*")
+  expect_warning(mi_wilson_phat(phats = rep(0.3,3), n = 10), ".*degrees of freedom.*")
 })

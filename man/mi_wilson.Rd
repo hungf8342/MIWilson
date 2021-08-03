@@ -5,14 +5,7 @@
 \title{Calculates the specified Wilson CI of a binomial proportion
 variable, given imputed data sets.}
 \usage{
-mi_wilson(
-  mids_obj = NA,
-  response = NA,
-  ci_level = 0.95,
-  summaries = TRUE,
-  phats,
-  n
-)
+mi_wilson(mids_obj = NA, response = NA, ci_level = 0.95, summaries = TRUE)
 }
 \arguments{
 \item{mids_obj}{mids object created by mice package}
@@ -22,10 +15,6 @@ mi_wilson(
 \item{ci_level}{desired confidence interval level (defaults to 95\%)}
 
 \item{summaries}{boolean: should summary helper values be printed (default TRUE)}
-
-\item{phats}{vector of binomial proportions (override mids_obj and response)}
-
-\item{n}{number of observations (needed if phats specified)}
 }
 \value{
 two-length vector of Wilson lower CI and upper CI
