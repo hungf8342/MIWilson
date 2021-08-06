@@ -65,9 +65,11 @@ create_imps <- function(n, m, incomplete) {
 
 ```
 
+To demonstrate, we create a master dataset with a true binomial proportion of $p=0.5$ and induce MCAR missingness for 30\% of the dataset. We then produce $m=10$ imputations and use them to create MI-Wilson and MI-Wald confidence intervals for $p$. 
+
 ```{r}
 n = 100
-p = 0.5
+p = 0.7
 m = 10
 MIA_perc = 0.3
 

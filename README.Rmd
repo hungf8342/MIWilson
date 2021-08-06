@@ -19,7 +19,11 @@ knitr::opts_chunk$set(
 [![R-CMD-check](https://github.com/hungf8342/MIWilson/workflows/R-CMD-check/badge.svg)](https://github.com/hungf8342/MIWilson/actions)
 <!-- badges: end -->
 
-The goal of MIWilson is to implement the Wilson confidence interval for binomial proportions given imputed missing data. 
+The goal of MIWilson is to implement the Wilson confidence interval for binomial proportions given multiple imputations of missing data.
+
+TODO: if phats are 0, then output warning; is it the same as if imputed values are the same?
+TODO: put together vignette (pdf thingy)
+TODO: publish to CRAN
 
 ## Installation
 
@@ -30,9 +34,9 @@ You can install the development version from [GitHub](https://github.com/) with:
 # install.packages("devtools")
 devtools::install_github("hungf8342/MIWilson")
 ```
-## Basic Usage
+## Basic Usage: MIDs Argument
 
-The functions which calculate confidence intervals (mi_wilson and mi_wald) take in a mids object (produced by the mice package), the binary response variable name (the response must be 0-1 valued), and an optional confidence level (default is 0.95).
+The functions which calculate confidence intervals (`mi_wilson` and `mi_wald`) take in a mids object (produced by the mice package), the binary response variable name (the response must be 0-1 valued), a summaries print option (default is TRUE), and a confidence level (default is 0.95).
 
 As an example, let's work with the hypertension (hyp) variable in the nhanes toy dataset. The hyp variable refers to whether an individual has hypertension. It originally has no and yes encoded as 1 and 2, so we need to first re-value the hyp variable. Calculating Wilson and Wald intervals for hyp is straightfoward afterwards.
 
@@ -63,5 +67,14 @@ nrow = imp$data %>% nrow()
 ## Qbar (mean of Qhats) and Ubar (average response variance over imputed datasets)
 Qbar(qhats)
 Ubar(qhats, m, nrow)
+```
+
+## Basic Usage: P-hats Argument
+
+If the user provides their imputed datasets (rather than relying on the `mice` package), MI-Wilson allows them to input the corresponding vector of observed binomial proportions instead of a mids object. `mi_wilson_phat` and `mi_wald_phat` take in a vector of observed binomial proportions (one proportion for each of $m$ imputed datasets),  the number of total observations (must be constant across datasets), a summaries print option (default is TRUE), and a confidence level (default is 0.95).
+
+```{r}
+mi_wilson(phats = c(0.2,0.23,0.22), n = 10)
+mi_wilson_phat(c(0,0,0),n=10)
 ```
 

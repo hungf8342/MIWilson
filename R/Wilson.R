@@ -196,8 +196,6 @@ dof <- function(qhats, m, nrow) {
 #' @param response string name of response variable (must be 0-1 valued)
 #' @param ci_level desired confidence interval level (defaults to 95%)
 #' @param summaries boolean: should summary helper values be printed (default TRUE)
-#' @param phats vector of binomial proportions (override mids_obj and response)
-#' @param n number of observations (needed if phats specified)
 #'
 #'
 #' @return two-length vector of Wilson lower CI and upper CI
@@ -208,40 +206,27 @@ dof <- function(qhats, m, nrow) {
 #' imp = mice::mice(mice::nhanes %>% dplyr::mutate(hyp = hyp-1))
 #' mi_wilson(imp, "hyp", 0.95)
 #'
-mi_wilson <- function(mids_obj=NA, response=NA, ci_level=0.95, summaries=TRUE, phats, n) {
+mi_wilson <- function(mids_obj=NA, response=NA, ci_level=0.95, summaries=TRUE) {
 
   #if confidence interval is invalid
   if(ci_level<=0 | ci_level>= 1) {
     stop("CI level must be between 0 and 1.")
   }
 
-  #if phats is provided, use instead of mids object and response
-  if (missing(phats)){
+  #test if provided mids object and response variable is valid
+  resp = tryCatch(mids_obj$data %>% select(all_of(response)),
+                  error = function(e)
+                    stop("Invalid mids object and/or response variable."))
 
-    #test if provided mids object and response variable is valid
-    resp = tryCatch(mids_obj$data %>% select(all_of(response)),
-                    error = function(e)
-                      stop("Invalid mids object and/or response variable."))
-
-    #if response is not 0-1 valued
-    if(all(lapply(resp,
-                  function(x) x %in% c(NA,0,1)) %>% unlist())==FALSE) {
-      stop(paste(response,"must be 0-1 binary encoded."))
-    }
-
-    qhats = Qhats(mids_obj, response)
-    m = mids_obj$m
-    nrow = mids_obj$data %>% nrow()
+  #if response is not 0-1 valued
+  if(all(lapply(resp,
+                function(x) x %in% c(NA,0,1)) %>% unlist())==FALSE) {
+    stop(paste(response,"must be 0-1 binary encoded."))
   }
-  else {
 
-    #if n not specified
-    if (missing(n)) stop("Must specify number of observations as function parameter.")
-
-    qhats = phats
-    m = length(phats)
-    nrow = n
-  }
+  qhats = Qhats(mids_obj, response)
+  m = mids_obj$m
+  nrow = mids_obj$data %>% nrow()
 
 
   qbar = Qbar(qhats)
@@ -281,8 +266,6 @@ mi_wilson <- function(mids_obj=NA, response=NA, ci_level=0.95, summaries=TRUE, p
 #' @param response string name of response variable (must be 0-1 valued)
 #' @param ci_level desired confidence interval level (defaults to 95%)
 #' @param summaries boolean: should summary helper values be printed (default TRUE)
-#' @param phats vector of binomial proportions (override mids_obj and response)
-#' @param n number of observations (needed if phats specified)
 #'
 #' @return two-length vector of Wald lower CI and upper CI
 #' @export
@@ -292,42 +275,28 @@ mi_wilson <- function(mids_obj=NA, response=NA, ci_level=0.95, summaries=TRUE, p
 #' imp = mice::mice(mice::nhanes %>% dplyr::mutate(hyp = hyp-1))
 #' mi_wald(imp, "hyp", 0.95)
 #'
-mi_wald <- function(mids_obj=NA, response=NA, ci_level=0.95, summaries=TRUE, phats, n) {
+mi_wald <- function(mids_obj=NA, response=NA, ci_level=0.95, summaries=TRUE) {
+
+  #test if provided mids object and response variable is valid
+  resp = tryCatch(mids_obj$data %>% select(all_of(response)),
+                  error = function(e)
+                    stop("Invalid mids object and/or response variable."))
+
 
   #if CI not between 0 and 1
   if(ci_level<=0 | ci_level>= 1) {
     stop("CI level must be between 0 and 1.")
   }
 
-  #if phats is provided, use instead of mids object and response
-  if (missing(phats)){
-
-    #test if provided mids object and response variable is valid
-    resp = tryCatch(mids_obj$data %>% select(all_of(response)),
-                    error = function(e)
-                      stop("Invalid mids object and/or response variable."))
-
-    #if response is not 0-1 valued
-    if(all(lapply(resp,
-                  function(x) x %in% c(NA,0,1)) %>% unlist())==FALSE) {
-      stop(paste(response,"must be 0-1 binary encoded."))
-    }
-
-    qhats = Qhats(mids_obj, response)
-    m = mids_obj$m
-    nrow = mids_obj$data %>% nrow()
+  #if response is not 0-1 valued
+  if(all(lapply(resp,
+                function(x) x %in% c(NA,0,1)) %>% unlist())==FALSE) {
+    stop(paste(response,"must be 0-1 binary encoded."))
   }
 
-  else {
-
-    #if n not specified
-    if (missing(n)) stop("Must specify number of observations as function parameter.")
-
-    qhats = phats
-    m = length(phats)
-    nrow = n
-  }
-
+  qhats = Qhats(mids_obj, response)
+  m = mids_obj$m
+  nrow = mids_obj$data %>% nrow()
 
   qbar = Qbar(qhats)
   tm = Tm(qhats, m, nrow)
