@@ -5,7 +5,7 @@
 \title{Calculates the specified Wilson CI of a binomial proportion
 variable, given imputed data sets.}
 \usage{
-mi_wilson(mids_obj = NA, response = NA, ci_level = 0.95, summaries = TRUE)
+mi_wilson(mids_obj, response, ci_level = 0.95, summaries = TRUE)
 }
 \arguments{
 \item{mids_obj}{mids object created by mice package}

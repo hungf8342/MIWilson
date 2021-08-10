@@ -206,7 +206,7 @@ dof <- function(qhats, m, nrow) {
 #' imp = mice::mice(mice::nhanes %>% dplyr::mutate(hyp = hyp-1))
 #' mi_wilson(imp, "hyp", 0.95)
 #'
-mi_wilson <- function(mids_obj=NA, response=NA, ci_level=0.95, summaries=TRUE) {
+mi_wilson <- function(mids_obj, response, ci_level=0.95, summaries=TRUE) {
 
   #if confidence interval is invalid
   if(ci_level<=0 | ci_level>= 1) {
@@ -275,7 +275,7 @@ mi_wilson <- function(mids_obj=NA, response=NA, ci_level=0.95, summaries=TRUE) {
 #' imp = mice::mice(mice::nhanes %>% dplyr::mutate(hyp = hyp-1))
 #' mi_wald(imp, "hyp", 0.95)
 #'
-mi_wald <- function(mids_obj=NA, response=NA, ci_level=0.95, summaries=TRUE) {
+mi_wald <- function(mids_obj, response, ci_level=0.95, summaries=TRUE) {
 
   #test if provided mids object and response variable is valid
   resp = tryCatch(mids_obj$data %>% select(all_of(response)),

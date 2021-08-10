@@ -5,9 +5,8 @@ Authors@R:
     person(given = "Frances",
            family = "Hung",
            role = c("aut", "cre"),
-           email = "wyfhung@gmail.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: MIWilson implements the Wilson confidence interval 
+           email = "wyfhung@gmail.com")
+Description: Implements the Wilson confidence interval 
     for binomial proportions given multiple imputations of missing data (detailed 
     theory provided in "Wilson Confidence Intervals for Binomial
     Proportions With Multiple Imputation for Missing
