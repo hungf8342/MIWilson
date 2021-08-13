@@ -21,9 +21,6 @@ knitr::opts_chunk$set(
 
 The goal of MIWilson is to implement the Wilson confidence interval for binomial proportions given multiple imputations of missing data.
 
-TODO: if phats are 0, then output warning; is it the same as if imputed values are the same?
-TODO: put together vignette (pdf thingy)
-TODO: publish to CRAN
 
 ## Installation
 
@@ -71,7 +68,7 @@ Ubar(qhats, m, nrow)
 
 ## Basic Usage: P-hats Argument
 
-If the user provides their imputed datasets (rather than relying on the `mice` package), MI-Wilson allows them to input the corresponding vector of observed binomial proportions instead of a mids object. `mi_wilson_phat` and `mi_wald_phat` take in a vector of observed binomial proportions (one proportion for each of $m$ imputed datasets),  the number of total observations (must be constant across datasets), a summaries print option (default is TRUE), and a confidence level (default is 0.95).
+If the user provides their own imputed datasets (rather than relying on the `mice` package), MI-Wilson allows them to input the corresponding vector of observed binomial proportions instead of a mids object. `mi_wilson_phat` and `mi_wald_phat` take in a vector of observed binomial proportions (one proportion for each of $m$ imputed datasets),  the number of total observations (must be constant across datasets), a summaries print option (default is TRUE), and a confidence level (default is 0.95).
 
 ```{r}
 mi_wilson(phats = c(0.2,0.23,0.22), n = 10)

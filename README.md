@@ -11,10 +11,6 @@
 The goal of MIWilson is to implement the Wilson confidence interval for
 binomial proportions given multiple imputations of missing data.
 
-TODO: if phats are 0, then output warning; is it the same as if imputed
-values are the same? TODO: put together vignette (pdf thingy) TODO:
-publish to CRAN
-
 ## Installation
 
 You can install the development version from
@@ -76,15 +72,15 @@ imp = mice::mice(nhanes)
 
 ## MI-Wilson and MI-Wald 99% CIs of the proportion of patients with hypertension 
 mi_wilson(imp,"hyp", 0.99)
-#> [1] "Qbar:  0.232"
-#> [1] "Rm:  0.602189781021898"
-#> [1] "dof:  28.3152984389348"
-#> [1] 0.07134426 0.54292320
+#> [1] "Qbar:  0.208"
+#> [1] "Rm:  0.205078125"
+#> [1] "dof:  138.118458049887"
+#> [1] 0.0733112 0.4657681
 mi_wald(imp, "hyp", 0.99)
-#> [1] "Qbar:  0.232"
-#> [1] "Tm:  0.0112384"
-#> [1] "dof:  28.3152984389348"
-#> [1] -0.02936932  0.49336932
+#> [1] "Qbar:  0.208"
+#> [1] "Tm:  0.0078976"
+#> [1] "dof:  138.118458049887"
+#> [1] -0.001165153  0.417165153
 ```
 
 Helper functions (other than Qhats) do not take in mids objects directly
@@ -101,16 +97,16 @@ nrow = imp$data %>% nrow()
 
 ## Qbar (mean of Qhats) and Ubar (average response variance over imputed datasets)
 Qbar(qhats)
-#> [1] 0.232
+#> [1] 0.208
 Ubar(qhats, m, nrow)
-#> [1] 0.0070144
+#> [1] 0.0065536
 ```
 
 ## Basic Usage: P-hats Argument
 
-If the user provides their imputed datasets (rather than relying on the
-`mice` package), MI-Wilson allows them to input the corresponding vector
-of observed binomial proportions instead of a mids object.
+If the user provides their own imputed datasets (rather than relying on
+the `mice` package), MI-Wilson allows them to input the corresponding
+vector of observed binomial proportions instead of a mids object.
 `mi_wilson_phat` and `mi_wald_phat` take in a vector of observed
 binomial proportions (one proportion for each of \(m\) imputed
 datasets), the number of total observations (must be constant across

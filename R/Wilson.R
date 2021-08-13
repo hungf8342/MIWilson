@@ -381,12 +381,19 @@ mi_wilson_phat <- function(phats, n, ci_level =0.95, summaries = TRUE) {
 #' @param ci_level desired confidence interval level (default 95%)
 #' @param summaries boolean: should summary helper values be printed (default TRUE)
 #'
-#' @return two-length vector of Wilson lower CI and upper CI
+#' @return Two-length vector of Wilson lower CI and upper CI
 #' @export
 #'
 #' @examples
 #' phats = c(0.2, 0.23, 0.25)
 #' mi_wald_phat(phats, 100, 0.99, TRUE)
+#'
+#' @section Related Functions:
+#'
+#' \itemize{
+#' \item \code{\link{mi_wald}}
+#' \item \code{\link{mi_wilson_phat}}
+#' }
 #'
 mi_wald_phat <- function(phats, n, ci_level = 0.95, summaries = TRUE) {
 

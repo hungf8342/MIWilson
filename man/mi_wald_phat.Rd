@@ -17,12 +17,21 @@ mi_wald_phat(phats, n, ci_level = 0.95, summaries = TRUE)
 \item{summaries}{boolean: should summary helper values be printed (default TRUE)}
 }
 \value{
-two-length vector of Wilson lower CI and upper CI
+Two-length vector of Wilson lower CI and upper CI
 }
 \description{
 Calculates the MI-Wald interval if given a vector of observed
 binomial proportions (one for each imputed data frame)
 }
+\section{Related Functions}{
+
+
+\itemize{
+\item \code{\link{mi_wald}}
+\item \code{\link{mi_wilson_phat}}
+}
+}
+
 \examples{
 phats = c(0.2, 0.23, 0.25)
 mi_wald_phat(phats, 100, 0.99, TRUE)
