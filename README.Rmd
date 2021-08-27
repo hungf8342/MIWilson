@@ -71,7 +71,7 @@ Ubar(qhats, m, nrow)
 If the user provides their own imputed datasets (rather than relying on the `mice` package), MI-Wilson allows them to input the corresponding vector of observed binomial proportions instead of a mids object. `mi_wilson_phat` and `mi_wald_phat` take in a vector of observed binomial proportions (one proportion for each of $m$ imputed datasets),  the number of total observations (must be constant across datasets), a summaries print option (default is TRUE), and a confidence level (default is 0.95).
 
 ```{r}
-mi_wilson(phats = c(0.2,0.23,0.22), n = 10)
-mi_wilson_phat(c(0,0,0),n=10)
+mi_wilson_phat(phats = c(0.2,0.23,0.22), n = 200)
+mi_wald_phat(phats = c(0.2,0.23,0.22), n = 200)
 ```
 

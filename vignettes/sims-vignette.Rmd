@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 In "Wilson Confidence Intervals for Binomial
 Proportions With Multiple Imputation for Missing
-Data" (A. Lott & J. Reiter, 2018), the authors run simulation studies comparing coverage of MI-Wilson and MI-Wald confidence intervals, among a few other slight variations of the two. This is good motivation for using the `phat` versions of the `mi_wilson` and `mi_wald` functions. While we don't implement the simulations here, we lay out a foundation and demonstrate one use of the `mi_wald_phat` and `mi_wilson_phat` functions.
+Data" (A. Lott & J. Reiter, 2018), the authors run simulation studies comparing coverage of MI-Wilson and MI-Wald confidence intervals, among a few other slight variations of the two. This is good motivation for using the `phat` versions of the `mi_wilson` and `mi_wald` functions. While we don't implement the full simulations here, we lay out a foundation and demonstrate one use of the `mi_wald_phat` and `mi_wilson_phat` functions.
 
 We first load the MI-Wilson library as follows:
 
@@ -24,7 +24,9 @@ We first load the MI-Wilson library as follows:
 library(MIWilson)
 ```
 
-We then create a simple master dataset with binary values and induce MCAR missingness; this is carried out by the `create_missing_data` function. With the incomplete master dataset, we create multiple imputations using Bayesian principles (see paper for details), using the `create_imps` function. 
+We then create a simple master dataset with binary values and induce MCAR missingness. Users of our package who want to use the `phat` versions of the main functions will provide their own imputed datasets which don't neccessarily have to produced via Bayesian methods or the following code.
+
+In this vignette, master dataset creation is carried out by the below `create_missing_data` function. With the incomplete master dataset, we create multiple imputations using Bayesian principles (see paper for details), using the `create_imps` function. 
 
 ```{r}
 #creating missing data

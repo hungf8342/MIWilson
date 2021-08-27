@@ -2,10 +2,14 @@ Package: MIWilson
 Title: Implementing the MI-Wilson Confidence Interval
 Version: 1.0.0
 Authors@R: 
-    person(given = "Frances",
+    c(person(given = "Frances",
            family = "Hung",
            role = c("aut", "cre"),
-           email = "wyfhung@gmail.com")
+           email = "wyfhung@gmail.com"),
+      person(given = "Jerry",
+            family = "Reiter",
+            role = c("aut"),
+            email = "wyfhung@gmail.com"))
 Description: Implements the Wilson confidence interval 
     for binomial proportions given multiple imputations of missing data (detailed 
     theory provided in "Wilson Confidence Intervals for Binomial

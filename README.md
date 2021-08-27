@@ -72,15 +72,15 @@ imp = mice::mice(nhanes)
 
 ## MI-Wilson and MI-Wald 99% CIs of the proportion of patients with hypertension 
 mi_wilson(imp,"hyp", 0.99)
-#> [1] "Qbar:  0.208"
-#> [1] "Rm:  0.205078125"
-#> [1] "dof:  138.118458049887"
-#> [1] 0.0733112 0.4657681
+#> [1] "Qbar:  0.184"
+#> [1] "Rm:  0.257510729613734"
+#> [1] "dof:  95.3877777777778"
+#> [1] 0.05898184 0.44788388
 mi_wald(imp, "hyp", 0.99)
-#> [1] "Qbar:  0.208"
-#> [1] "Tm:  0.0078976"
-#> [1] "dof:  138.118458049887"
-#> [1] -0.001165153  0.417165153
+#> [1] "Qbar:  0.184"
+#> [1] "Tm:  0.0075008"
+#> [1] "dof:  95.3877777777778"
+#> [1] -0.02091931  0.38891931
 ```
 
 Helper functions (other than Qhats) do not take in mids objects directly
@@ -97,9 +97,9 @@ nrow = imp$data %>% nrow()
 
 ## Qbar (mean of Qhats) and Ubar (average response variance over imputed datasets)
 Qbar(qhats)
-#> [1] 0.208
+#> [1] 0.184
 Ubar(qhats, m, nrow)
-#> [1] 0.0065536
+#> [1] 0.0059648
 ```
 
 ## Basic Usage: P-hats Argument
@@ -114,16 +114,14 @@ datasets), a summaries print option (default is TRUE), and a confidence
 level (default is 0.95).
 
 ``` r
-mi_wilson(phats = c(0.2,0.23,0.22), n = 10)
+mi_wilson_phat(phats = c(0.2,0.23,0.22), n = 200)
 #> [1] "Qbar:  0.216666666666667"
-#> [1] "Rm:  0.0183474215320097"
-#> [1] "dof:  6161.29288265307"
-#> [1] 0.07684304 0.47892199
-mi_wilson_phat(c(0,0,0),n=10)
-#> Warning in mi_wilson_phat(c(0, 0, 0), n = 10): Imputed binomial proportions are
-#> identical; degrees of freedom set to infinity.
-#> [1] "Qbar:  0"
-#> [1] "Rm:  0"
-#> [1] "dof:  Inf"
-#> [1] 1.387779e-17 2.129420e-01
+#> [1] "Rm:  0.366948430640194"
+#> [1] "dof:  27.7539107780612"
+#> [1] 0.1645113 0.2798191
+mi_wald_phat(phats = c(0.2,0.23,0.22), n = 200)
+#> [1] "Qbar:  0.216666666666667"
+#> [1] "Tm:  0.00115894444444444"
+#> [1] "dof:  27.7539107780612"
+#> [1] 0.1587370 0.2745963
 ```

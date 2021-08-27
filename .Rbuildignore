@@ -8,3 +8,4 @@
 ^test_drafts$
 ^cran-comments$
 ^cran-comments\.md$
+^CRAN-RELEASE$
